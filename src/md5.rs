@@ -1,6 +1,4 @@
-//! The [MD5][1] hash function.
-//!
-//! [1]: https://en.wikipedia.org/wiki/MD5
+//! The MD5 hash function.
 
 // The implementation is based on:
 // http://people.csail.mit.edu/rivest/Md5.c
@@ -31,7 +29,7 @@ const PADDING: [u8; 64] = [
 ];
 
 impl Context {
-    /// Create a context.
+    /// Create a context for computing a digest.
     #[inline]
     pub fn new() -> Context {
         Context {
@@ -41,19 +39,19 @@ impl Context {
         }
     }
 
-    /// Consume a buffer.
-    pub fn consume(&mut self, buffer: &[u8]) {
+    /// Consume data.
+    pub fn consume(&mut self, data: &[u8]) {
         let mut input: [u32; 16] = unsafe { mem::uninitialized() };
         let mut k = ((self.handled[0] >> 3) & 0x3F) as usize;
 
-        let length = buffer.len() as u32;
+        let length = data.len() as u32;
         if (self.handled[0] + (length << 3)) < self.handled[0] {
             self.handled[1] += 1;
         }
         self.handled[0] += length << 3;
         self.handled[1] += length >> 29;
 
-        for &value in buffer {
+        for &value in data {
             self.input[k] = value;
             k += 1;
             if k != 0x40 {
@@ -109,9 +107,9 @@ impl Context {
 
 impl Write for Context {
     #[inline]
-    fn write(&mut self, buffer: &[u8]) -> Result<usize> {
-        self.consume(buffer);
-        Ok(buffer.len())
+    fn write(&mut self, data: &[u8]) -> Result<usize> {
+        self.consume(data);
+        Ok(data.len())
     }
 
     #[inline]
@@ -125,6 +123,14 @@ impl From<Context> for Digest {
     fn from(context: Context) -> Digest {
         context.compute()
     }
+}
+
+/// Compute the digest of data.
+#[inline]
+pub fn compute(data: &[u8]) -> Digest {
+    let mut context = Context::new();
+    context.consume(data);
+    context.compute()
 }
 
 fn transform(buffer: &mut [u32; 4], input: &[u32; 16]) {
