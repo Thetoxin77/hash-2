@@ -1,19 +1,5 @@
-# Hash [![Version][version-img]][version-url] [![Status][status-img]][status-url]
+# Hash
 
-The package provides [hash functions][1].
+Use the [md5][1] package instead.
 
-## [Documentation][doc]
-
-## Contributing
-
-1. Fork the project.
-2. Implement your idea.
-3. Open a pull request.
-
-[1]: http://en.wikipedia.org/wiki/Hash_function
-
-[version-img]: https://img.shields.io/crates/v/hash.svg
-[version-url]: https://crates.io/crates/hash
-[status-img]: https://travis-ci.org/stainless-steel/hash.svg?branch=master
-[status-url]: https://travis-ci.org/stainless-steel/hash
-[doc]: https://stainless-steel.github.io/hash
+[1]: https://crates.io/crates/md5
